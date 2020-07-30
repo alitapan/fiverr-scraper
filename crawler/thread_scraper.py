@@ -82,11 +82,12 @@ class ThreadScraper:
 
         # Thread text
         try:
-            for i in range(len(driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p"))):
-                if (i == 0):
-                    thread_text = driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p")[i].text
-                else:
-                    thread_text = thread_text + "\n" + driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p")[i].text
+            # for i in range(len(driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p"))):
+            #     if (i == 0):
+            #         thread_text = driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p")[i].text
+            #     else:
+            #         thread_text = thread_text + "\n" + driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//p")[i].text
+            thread_text = driver.find_elements_by_xpath("//div[@class='posts-wrapper']//div[@class='post-stream']//div[starts-with(@class, 'topic-post')][1]//div[@class='regular contents']//div[@class='cooked']")[0].text
         except:
             thread_text = "N/A"
 

@@ -47,7 +47,7 @@ class Spider:
 
             print("Collecting thread URLs...")
             # Execute script to scroll down the page
-            for i in range(5):
+            for i in range(15):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
                 time.sleep(2)
 

@@ -5,7 +5,8 @@ import time
 import pandas as pd
 from datetime import datetime
 from selenium import webdriver
-from thread_scraper import ThreadScraper
+from scraper import ThreadScraper
+from analysis import CompareThreads
 from pathlib import Path
 #from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.chrome.options import Options
@@ -47,7 +48,7 @@ class Spider:
 
             print("Collecting thread URLs...")
             # Execute script to scroll down the page
-            for i in range(15):
+            for i in range(1):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
                 time.sleep(2)
 
@@ -60,7 +61,10 @@ class Spider:
                 ThreadScraper(data, driver, url)
 
             # Save the data
-            self.save_data(data, forum_num)
+            filename = self.save_data(data, forum_num)
+
+            # Run the analysis on the collected data
+            self.run_analysis(filename, forum_num, driver)
 
         def save_data(self, data, forum_num):
 
@@ -69,7 +73,7 @@ class Spider:
             # Conver to pandas dataframe
             df = pd.DataFrame(data, columns=["thread_name", "categories", "replies", "views", "total_likes", "creation_date", "first_reply_date", "last_reply_date", "thread_url", "frequent_posters", "thread_author", "thread_likes", "thread_text", "thread_images", "thread_edits", "latest_thread_edit_date", "reply_author", "reply_likes", "reply_text", "reply_images", "reply_date", "crawl_date"])
 
-            # Get the date
+            # Get the datet1.type(
             crawl_date = str(datetime.now()).split(" ")[0]
             filename = crawl_date + ".csv"
 
@@ -98,6 +102,39 @@ class Spider:
                 os.chdir(os.path.dirname( __file__) + '/data/events/')
                 df.to_csv(filename , index=False, encoding='utf-8')
 
+            return filename
+
+        def run_analysis(self, filename, forum_num, driver):
+
+            # Get the most recent file after the filename
+            if forum_num == 0:
+                os.chdir(os.path.dirname( __file__) + '/data/welcome/')
+
+            elif forum_num == 1:
+                os.chdir(os.path.dirname( __file__) + '/data/covid-19_discussions/')
+
+            elif forum_num == 2:
+                os.chdir(os.path.dirname( __file__) + '/data/fiverr_tips/')
+
+            elif forum_num == 3:
+                os.chdir(os.path.dirname( __file__) + '/data/your_fiverr_experience/')
+
+            elif forum_num == 4:
+                os.chdir(os.path.dirname( __file__) + '/data/fiverr_site/')
+
+            elif forum_num == 5:
+                os.chdir(os.path.dirname( __file__) + '/data/events/')
+
+            all_files = os.listdir()
+            # remove the censored directory
+            uneccessary_dir = max(all_files)
+            all_files.remove(uneccessary_dir)
+            all_files.remove(filename)
+
+            t1 = pd.read_csv(max(all_files))
+            t2 = pd.read_csv(filename)
+
+            CompareThreads(t1, t2, driver)
 
 
 driver = webdriver.Chrome()

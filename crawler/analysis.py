@@ -26,23 +26,23 @@ class CompareThreads:
                 if t1.get(key_entry).thread_text != t2.get(key_entry).thread_text:
                     thread_flag = True
 
-                # compare the reply flows for further analysis
-                t1_list = t1.get(key_entry).reply_list
-                t2_list = t2.get(key_entry).reply_list
+                # # compare the reply flows for further analysis
+                # t1_list = t1.get(key_entry).reply_list
+                # t2_list = t2.get(key_entry).reply_list
 
-                # check the replies to this thread if anything has been removed
-                non_equal_indices = []
-                for i in range(len(t1_list)):
-                    if PostObject.equals(t2_list[i], t1_list[i]) == 0:
-                        # The post may been deleted/censcored/changed get the index
-                        non_equal_indices.append(i)
+                # # check the replies to this thread if anything has been removed
+                # non_equal_indices = []
+                # for i in range(len(t1_list)):
+                #     if PostObject.equals(t2_list[i], t1_list[i]) == 0:
+                #         # The post may been deleted/censcored/changed get the index
+                #         non_equal_indices.append(i)
 
-                # Get a detailed report of changed posts for further investigation
-                # if(len(non_equal_indices) > 0 or thread_flag):
-                if(len(non_equal_indices) > 0):
-                    # replies dont match or the thread text has been changed
-                    # report(t1.get(key_entry), t2.get(key_entry), non_equal_indices, thread_flag)
-                    self.report(t1.get(key_entry), t2.get(key_entry), non_equal_indices)
+                # # Get a detailed report of changed posts for further investigation
+                # # if(len(non_equal_indices) > 0 or thread_flag):
+                # if(len(non_equal_indices) > 0):
+                #     # replies dont match or the thread text has been changed
+                #     # report(t1.get(key_entry), t2.get(key_entry), non_equal_indices, thread_flag)
+                #     self.report(t1.get(key_entry), t2.get(key_entry), non_equal_indices)
             else:
                 # thread does not exist in t2
                 # check to see if the thread is deleted
@@ -79,13 +79,13 @@ class CompareThreads:
         driver.get(thread_1.thread_url)
 
         # Let the page load
-        time.sleep(2)
+        time.sleep(3)
 
         # Let everythin load
         time.sleep(1)
 
         # if the url is NOT accessible then the thread has been deleted and needs to be reported!!
-        if(not(len(driver.find_elements_by_xpath("//body[@class='no-ember']")) > 0)):
+        if(not(len(driver.find_elements_by_xpath("//div[@class='title-wrapper']//a[@class='fancy-title']")) > 0)):
             # The page is deleted save to the deleted list
             censored.append(thread_1)
             thread_id = ''
@@ -246,6 +246,10 @@ class PostObject:
 
     @staticmethod
     def equals(p1, p2):
+        print(p1.author)
+        print(p2.author)
+        print(p1.date)
+        print(p2.date)
         if (p1.author == p2.author and p1.date == p2.date) or (math.isnan(p1.author) and math.isnan(p1.date) and math.isnan(p2.author) and math.isnan(p2.date)):
             return 1
         else:

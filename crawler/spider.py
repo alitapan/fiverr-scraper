@@ -21,7 +21,7 @@ options.add_argument("--headless")
 
 class Spider:
 
-        def __init__(self, driver, fiverr_url):
+        def __init__(self, driver, fiverr_url, arg1 = False, arg2 = None):
 
             # Get web page
             driver.get(fiverr_url)
@@ -33,10 +33,23 @@ class Spider:
                 if(len(forum_urls) == 6):
                     break
 
-            # Loop through the forum URLs and scrape them
-            for url in forum_urls:
+            if (arg1 == False):
+                # Loop through the forum URLs and scrape them
+                for url in forum_urls:
+                    data = []
+                    self.crawl_forum(data, driver, url, forum_urls.index(url))
+            else:
+
+                # Pick the index of the forum URLs with arg2
+                # arg2 = 1 --> Scrape the Welcome threads
+                # arg2 = 2 --> Scrape the COVID-19 Discussions threads
+                # arg2 = 3 --> Scrape the Fiverr Tips threads
+                # arg2 = 4 --> Scrape the Your Fiverr Experience threads
+                # arg2 = 5 --> Scrape the Fiverr Site threads
+                # arg2 = 6 --> Scrape the Events threads
+
                 data = []
-                self.crawl_forum(data, driver, url, forum_urls.index(url))
+                self.crawl_forum(data, driver, forum_urls[int(arg2) - 1], int(arg2) - 1)
 
 
         def crawl_forum(self, data, driver, forum_url, forum_num):
@@ -136,10 +149,43 @@ class Spider:
 
             CompareThreads(t1, t2, driver)
 
+        # def main(self):
+        #
+        #     driver = webdriver.Chrome()
+        #     #driver = webdriver.Chrome(options = options)
+        #     url = "https://forum.fiverr.com/"
+        #
+        #     if (sys.argv[1] == "1"):
+        #         # For multiprocessing
+        #         Spider(driver, url, 1, sys.argv[2])
+        #     else:
+        #         Spider(driver, url)
+        #
+        #     driver.quit()
+        #     print("Done!")
+        #
+        # if __name__ == " __main__":
+        #     s = Spider
 
-driver = webdriver.Chrome()
+
+
 #driver = webdriver.Chrome(options = options)
 url = "https://forum.fiverr.com/"
-Spider(driver, url)
-driver.quit()
-print("Done!")
+
+if(len(sys.argv) > 1):
+    if (sys.argv[1] == "1" and len(sys.argv) > 2):
+        if(int(sys.argv[2]) > 6):
+            print("Invalid thread option, aborting scraping...")
+        else:
+            # For multiprocessing
+            driver = webdriver.Chrome()
+            Spider(driver, url, True, sys.argv[2])
+            driver.quit()
+            print("Done!")
+    else:
+        print("Invalid options, cleaning up...")
+else:
+    driver = webdriver.Chrome()
+    Spider(driver, url)
+    driver.quit()
+    print("Done!")

@@ -12,10 +12,13 @@ class CompareThreads:
 
     def __init__(self, a, b, webdriver):
 
+        print("Starting thread analysis...")
+
         censored = []
         t1 = self.createThreadFlow(a)
         t2 = self.createThreadFlow(b)
 
+        print("Running thread analysis...")
         # compare the data objects stored in the dictionaries while iterating over t2's entries.
         for key_entry in t1:
             # check if this thread exists in t1

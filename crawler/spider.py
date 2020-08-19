@@ -49,10 +49,10 @@ class Spider:
                 # arg2 = 6 --> Scrape the Events threads
 
                 data = []
-                self.crawl_forum(data, driver, forum_urls[int(arg2) - 1], int(arg2) - 1)
+                self.crawl_forum(data, driver, forum_urls[int(arg2) - 1], int(arg2) - 1, True)
 
 
-        def crawl_forum(self, data, driver, forum_url, forum_num):
+        def crawl_forum(self, data, driver, forum_url, forum_num, arg1 = False):
 
             print("Initializing...")
 
@@ -77,7 +77,10 @@ class Spider:
             filename = self.save_data(data, forum_num)
 
             # Run the analysis on the collected data
-            self.run_analysis(filename, forum_num, driver)
+            if(arg1 == False):
+                self.run_analysis(filename, forum_num, driver)
+            else:
+                self.run_analysis(filename, forum_num, driver, True)
 
         def save_data(self, data, forum_num):
 
@@ -117,26 +120,27 @@ class Spider:
 
             return filename
 
-        def run_analysis(self, filename, forum_num, driver):
+        def run_analysis(self, filename, forum_num, driver, arg1 = False):
 
-            # Get the most recent file after the filename
-            if forum_num == 0:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
+            if(arg1 == False):
+                # Get the most recent file after the filename
+                if forum_num == 0:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
 
-            elif forum_num == 1:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
+                elif forum_num == 1:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
 
-            elif forum_num == 2:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
+                elif forum_num == 2:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
 
-            elif forum_num == 3:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
+                elif forum_num == 3:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
 
-            elif forum_num == 4:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
+                elif forum_num == 4:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
 
-            elif forum_num == 5:
-                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
+                elif forum_num == 5:
+                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
 
             all_files = os.listdir()
             # remove the censored directory
@@ -148,24 +152,6 @@ class Spider:
             t2 = pd.read_csv(filename)
 
             CompareThreads(t1, t2, driver)
-
-        # def main(self):
-        #
-        #     driver = webdriver.Chrome()
-        #     #driver = webdriver.Chrome(options = options)
-        #     url = "https://forum.fiverr.com/"
-        #
-        #     if (sys.argv[1] == "1"):
-        #         # For multiprocessing
-        #         Spider(driver, url, 1, sys.argv[2])
-        #     else:
-        #         Spider(driver, url)
-        #
-        #     driver.quit()
-        #     print("Done!")
-        #
-        # if __name__ == " __main__":
-        #     s = Spider
 
 
 

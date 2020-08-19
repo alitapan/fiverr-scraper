@@ -92,27 +92,27 @@ class Spider:
 
             # Save to the appropriate directory
             if forum_num == 0:
-                os.chdir(os.path.dirname( __file__) + '/data/welcome/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
                 df.to_csv(filename, index=False, encoding='utf-8')
 
             elif forum_num == 1:
-                os.chdir(os.path.dirname( __file__) + '/data/covid-19_discussions/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
                 df.to_csv(filename, index=False, encoding='utf-8')
 
             elif forum_num == 2:
-                os.chdir(os.path.dirname( __file__) + '/data/fiverr_tips/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
                 df.to_csv(filename, index=False, encoding='utf-8')
 
             elif forum_num == 3:
-                os.chdir(os.path.dirname( __file__) + '/data/your_fiverr_experience/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
                 df.to_csv(filename, index=False, encoding='utf-8')
 
             elif forum_num == 4:
-                os.chdir(os.path.dirname( __file__) + '/data/fiverr_site/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
                 df.to_csv(filename , index=False, encoding='utf-8')
 
             elif forum_num == 5:
-                os.chdir(os.path.dirname( __file__) + '/data/events/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
                 df.to_csv(filename , index=False, encoding='utf-8')
 
             return filename
@@ -121,22 +121,22 @@ class Spider:
 
             # Get the most recent file after the filename
             if forum_num == 0:
-                os.chdir(os.path.dirname( __file__) + '/data/welcome/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
 
             elif forum_num == 1:
-                os.chdir(os.path.dirname( __file__) + '/data/covid-19_discussions/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
 
             elif forum_num == 2:
-                os.chdir(os.path.dirname( __file__) + '/data/fiverr_tips/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
 
             elif forum_num == 3:
-                os.chdir(os.path.dirname( __file__) + '/data/your_fiverr_experience/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
 
             elif forum_num == 4:
-                os.chdir(os.path.dirname( __file__) + '/data/fiverr_site/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
 
             elif forum_num == 5:
-                os.chdir(os.path.dirname( __file__) + '/data/events/')
+                os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
 
             all_files = os.listdir()
             # remove the censored directory

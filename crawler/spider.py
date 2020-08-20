@@ -122,25 +122,25 @@ class Spider:
 
         def run_analysis(self, filename, forum_num, driver, arg1 = False):
 
-            if(arg1 == False):
-                # Get the most recent file after the filename
-                if forum_num == 0:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
-
-                elif forum_num == 1:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
-
-                elif forum_num == 2:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
-
-                elif forum_num == 3:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
-
-                elif forum_num == 4:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
-
-                elif forum_num == 5:
-                    os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
+            # if(arg1 == False):
+            #     # Get the most recent file after the filename
+            #     if forum_num == 0:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
+            #
+            #     elif forum_num == 1:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
+            #
+            #     elif forum_num == 2:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
+            #
+            #     elif forum_num == 3:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
+            #
+            #     elif forum_num == 4:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
+            #
+            #     elif forum_num == 5:
+            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
 
             all_files = os.listdir()
             # remove the censored directory
@@ -156,7 +156,6 @@ class Spider:
 
 
 
-#driver = webdriver.Chrome(options = options)
 url = "https://forum.fiverr.com/"
 
 if(len(sys.argv) > 1):
@@ -164,15 +163,16 @@ if(len(sys.argv) > 1):
         if(int(sys.argv[2]) > 6):
             print("Invalid thread option, aborting scraping...")
         else:
-            # For multiprocessing
-            driver = webdriver.Chrome()
+            #driver = webdriver.Chrome()
+            driver = webdriver.Chrome(options = options)
             Spider(driver, url, True, sys.argv[2])
             driver.quit()
             print("Done!")
     else:
         print("Invalid options, cleaning up...")
 else:
-    driver = webdriver.Chrome()
+    #driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options = options)
     Spider(driver, url)
     driver.quit()
     print("Done!")

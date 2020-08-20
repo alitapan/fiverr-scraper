@@ -26,7 +26,11 @@ class ThreadScraper:
         # -----------------------#
 
         # Thread name
-        thread_name = driver.find_elements_by_xpath("//div[@class='title-wrapper']//a[@class='fancy-title']")[0].text
+        try:
+            thread_name = driver.find_elements_by_xpath("//div[@class='title-wrapper']//a[@class='fancy-title']")[0].text
+        except:
+            print("Failed to scrape the following URL:" + thread_url)
+            return
 
         # Thread categories
         categories = driver.find_elements_by_xpath("//div[@class='title-wrapper']//div[starts-with(@class, 'topic-category')]")[0].text

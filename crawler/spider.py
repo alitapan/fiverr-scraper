@@ -157,22 +157,26 @@ class Spider:
 
 
 url = "https://forum.fiverr.com/"
-
+t1 = datetime.now()
 if(len(sys.argv) > 1):
     if (sys.argv[1] == "1" and len(sys.argv) > 2):
         if(int(sys.argv[2]) > 6):
             print("Invalid thread option, aborting scraping...")
         else:
-            #driver = webdriver.Chrome()
-            driver = webdriver.Chrome(options = options)
+            driver = webdriver.Chrome()
+            #driver = webdriver.Chrome(options = options)
             Spider(driver, url, True, sys.argv[2])
             driver.quit()
             print("Done!")
     else:
         print("Invalid options, cleaning up...")
 else:
-    #driver = webdriver.Chrome()
-    driver = webdriver.Chrome(options = options)
+    driver = webdriver.Chrome()
+    #driver = webdriver.Chrome(options = options)
     Spider(driver, url)
     driver.quit()
     print("Done!")
+
+t2 = datetime.now()
+delta = t2 - t1
+print("Time elapsed: " + str(int(delta.total_seconds()/60)) + " minutes")

@@ -163,16 +163,16 @@ if(len(sys.argv) > 1):
         if(int(sys.argv[2]) > 6):
             print("Invalid thread option, aborting scraping...")
         else:
-            driver = webdriver.Chrome()
-            #driver = webdriver.Chrome(options = options)
+            #driver = webdriver.Chrome()
+            driver = webdriver.Chrome(options = options)
             Spider(driver, url, True, sys.argv[2])
             driver.quit()
             print("Done!")
     else:
         print("Invalid options, cleaning up...")
 else:
-    driver = webdriver.Chrome()
-    #driver = webdriver.Chrome(options = options)
+    #driver = webdriver.Chrome()
+    driver = webdriver.Chrome(options = options)
     Spider(driver, url)
     driver.quit()
     print("Done!")

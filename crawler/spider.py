@@ -60,10 +60,20 @@ class Spider:
             driver.get(forum_url)
 
             print("Collecting thread URLs...")
+
+            # For manual scraping
             # Execute script to scroll down the page
-            for i in range(10):
+            # for i in range(10):
+            #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+            #     time.sleep(2)
+
+            # Scrapes the entire forum
+            reached_bottom_of_page = False
+            while(not reached_bottom_of_page):
                 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
-                time.sleep(2)
+                if(len(driver.find_elements_by_xpath("//footer[@class='topic-list-bottom']//div[@class='footer-message ember-view']//h3")) > 0):
+                    reached_bottom_of_page = True
+                time.sleep(5.0)
 
             thread_urls = []
             for element in driver.find_elements_by_xpath("//table[@class='topic-list ember-view']//tbody//tr//a[starts-with(@class, 'title raw-link')]"):
@@ -163,16 +173,16 @@ if(len(sys.argv) > 1):
         if(int(sys.argv[2]) > 6):
             print("Invalid thread option, aborting scraping...")
         else:
-            #driver = webdriver.Chrome()
-            driver = webdriver.Chrome(options = options)
+            driver = webdriver.Chrome()
+            #driver = webdriver.Chrome(options = options)
             Spider(driver, url, True, sys.argv[2])
             driver.quit()
             print("Done!")
     else:
         print("Invalid options, cleaning up...")
 else:
-    #driver = webdriver.Chrome()
-    driver = webdriver.Chrome(options = options)
+    driver = webdriver.Chrome()
+    #driver = webdriver.Chrome(options = options)
     Spider(driver, url)
     driver.quit()
     print("Done!")

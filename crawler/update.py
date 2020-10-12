@@ -15,7 +15,7 @@ import pandas as pd
 
 class Update:
 
-    def __init__(self, driver, fiverr_url, date, arg1 = False):
+    def __init__(self, driver, fiverr_url, arg1 = False):
 
         # Get web page
         driver.get(fiverr_url)
@@ -31,7 +31,7 @@ class Update:
             # Loop through the forum URLs and update them
             for url in forum_urls:
                 data = []
-                self.update_forum(data, driver, url, forum_urls.index(url), date)
+                self.update_forum(data, driver, url, forum_urls.index(url))
 
         else:
 
@@ -44,9 +44,9 @@ class Update:
                 # arg2 = 6 --> Update the Events threads
 
                 data = []
-                self.update_forum(data, driver, forum_urls[int(arg1) - 1], int(arg1) - 1, date, True)
+                self.update_forum(data, driver, forum_urls[int(arg1) - 1], int(arg1) - 1, True)
 
-    def update_forum(self, data, driver, forum_url, forum_num, last_update, arg1 = False):
+    def update_forum(self, data, driver, forum_url, forum_num, arg1 = False):
 
         print("Preparing to update...")
 
@@ -55,7 +55,10 @@ class Update:
 
         # Check last update date from data
         # Go in data and read the name, store it in last_update
-        # last_update = ...
+
+        # TODO:
+        last_update_csv = pd.read_csv()
+        #last_update = ...
 
         # Scroll down until right before the given date
         # Check the date of the last forum element in the page and compare it to the last_update
@@ -91,6 +94,9 @@ class Update:
     # Converts the given string into datetime format
     # Example: "Sep 19, 2020 2:26pm" will be converted into
     def convert_date(self, date):
+
+        # TODO:
+
         date_list = date.split()
 
         month = date_list[0]
@@ -98,7 +104,60 @@ class Update:
         year = date_list[2]
 
     def update_csv(self, data):
-        None
+
+        print("Updating csv...")
+
+        # Get the csv file - previously updated df
+        pud = pd.read_csv()
+
+        # Find rows with matching thread name or matching thread_id* from data in previously_updated_df
+        # *thread_id is the last digits in the thread_url
+        row_index = 0
+        while(row_index < data.size - 1):
+
+            # If the current forum rows exist in the pud then
+            # replace the rows in previously_updated_df with newly collected data
+            # if(pud["thread_url"].str.contains(str(data["thread_url"][row_index])) or pud["thread_name"].str.contains(str(data["thread_name"][row_index]))):
+            if(pud["thread_url"].str.contains(str(data["thread_url"][row_index]))):
+                # TODO:
+
+                # insert data rows into previously_updated_df
+                # Get index of the first and last occurence of the matched forum threads
+                index_list = pud[pud["thread_url"].str.contains(str(data["thread_url"][row_index]))].index.tolist()
+
+                first_index = index_list[0]
+                last_index = index_list[-1]
+
+                # Create a new dataframe upto the first index --> df_1
+                df_1 = pud.iloc[:, ]
+                # Create a new dataframe starting from last index to the end of the csv --> df_2
+                # Append df_1 with new data --> df_temp
+                # Append df_temp with df_2 --> previously_updated_df
+                None
+
+            # The current forum row does not exist, insert it "appropriatly" into the previosuly_updated_df
+            else:
+
+                # TODO:
+
+                None
+
+            #------------------------------------------------------------------------------------------#
+            # Update index: skip through each forum thread instead of incrementing the loop index by 1
+            replies = int(d["replies"][row_index])
+            # If there are no replies skip to the next post
+            try:
+                 if(replies == 0):
+                     row_index += 1
+                 else:
+                     row_index += replies
+            except:
+                row_index += 1
+
+
+        # Save new edited csv
+        crawl_date = str(datetime.now()).split(" ")[0]
+        filename = crawl_date + ".csv"
 
 
 url = "https://forum.fiverr.com/"

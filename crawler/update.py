@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from datetime import datetime
 import time
 import pandas as pd
-
+import zipfile
 
 # argv[1] will determine which forum to update
 # if no argv then it will update everything
@@ -53,12 +53,16 @@ class Update:
         # Get web page
         driver.get(forum_url)
 
-        # Check last update date from data
-        # Go in data and read the name, store it in last_update
+        # Check last update date
+        try:
+            # Get the csv file - previously updated df = pud
+            pud = get_last_updated_csv(forum_num)
+            # Get the last update date from the file name of the csv
+            last_update = str(min(os.listdir()))
 
-        # TODO:
-        last_update_csv = pd.read_csv()
-        #last_update = ...
+        except:
+            print("Failed to update the specified forum, could not find a previously updated csv zip")
+            quit()
 
         # Scroll down until right before the given date
         # Check the date of the last forum element in the page and compare it to the last_update
@@ -82,18 +86,56 @@ class Update:
                     end_flag = True
                 time.sleep(5 .0)
 
-            # Else we have all the forum threads that were updated/posted on the page, start iterating from the last element towards the first one to sotre the updates on to data
+            # Else we have all the forum threads that were updated/posted on the page, start iterating from the last element towards the first one to store the updates on to data
             else:
                 thread_urls.append(driver.find_elements_by_xpath("//table[@class='topic-list ember-view']//tbody//tr//a[starts-with(@class, 'title raw-link')]")[update_counter].get_attribute("href"))
-                ThreadScraper(data, driver, url)
+                # ThreadScraper(data, driver, url)
                 update_counter -= 1
 
+        # Scrape the threads
+
+
         # Update the csv file
-        update_csv(data)
+        update_csv(data, forum_num, pud)
+
+    def get_last_updated_csv(self, forum_num):
+
+        extension = ''
+        if forum_num == 0:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
+            extension = '/data/welcome/'
+        elif forum_num == 1:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
+            extension = '/data/covid-19_discussions/'
+        elif forum_num == 2:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
+            extension = '/data/fiverr_tips/'
+        elif forum_num == 3:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
+            extension = '/data/your_fiverr_experience/'
+        elif forum_num == 4:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
+            extension = '/data/fiverr_site/'
+        elif forum_num == 5:
+            os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
+            extension = '/data/events/'
+
+        # Unzip the file
+        csv_zip = str(min(os.listdir()))
+        with zipfile.ZipFile(csv_zip, 'r') as zip_ref:
+            zip_ref.extractall(os.path.dirname(os.path.abspath(__file__)) + extension)
+
+        # delete the zip file
+        os.remove(csv_zip)
+
+        # Return the csv in pandas dataframe
+        return pd.read_csv(csv_zip.split(".")[0] + ".csv")
+
+
 
     # Converts the given string into datetime format
     # Example: "Sep 19, 2020 2:26pm" will be converted into
-    def convert_date(self, date):
+    def convert_date(self, date, forum_num):
 
         # TODO:
 
@@ -103,12 +145,9 @@ class Update:
         day = date_list[1].split(",")[0]
         year = date_list[2]
 
-    def update_csv(self, data):
+    def update_csv(self, data, pud):
 
         print("Updating csv...")
-
-        # Get the csv file - previously updated df
-        pud = pd.read_csv()
 
         # Find rows with matching thread name or matching thread_id* from data in previously_updated_df
         # *thread_id is the last digits in the thread_url
@@ -119,7 +158,6 @@ class Update:
             # replace the rows in previously_updated_df with newly collected data
             # if(pud["thread_url"].str.contains(str(data["thread_url"][row_index])) or pud["thread_name"].str.contains(str(data["thread_name"][row_index]))):
             if(pud["thread_url"].str.contains(str(data["thread_url"][row_index]))):
-                # TODO:
 
                 # insert data rows into previously_updated_df
                 # Get index of the first and last occurence of the matched forum threads
@@ -129,18 +167,27 @@ class Update:
                 last_index = index_list[-1]
 
                 # Create a new dataframe upto the first index --> df_1
-                df_1 = pud.iloc[:, ]
+                df_1 = pud.iloc[:index_list[0]]
                 # Create a new dataframe starting from last index to the end of the csv --> df_2
-                # Append df_1 with new data --> df_temp
-                # Append df_temp with df_2 --> previously_updated_df
-                None
+                df_2 = pud.iloc[index_list[-1]:]
 
-            # The current forum row does not exist, insert it "appropriatly" into the previosuly_updated_df
+                try:
+                    # Append df_1 with new data
+                    # Append df_1 with df_2 --> pud
+                    pud = df_1.append(data.iloc[row_index:(row_index + int(data["replies"][row_index]))]).append(df_2)
+
+                except:
+                    print("Something went wrong... ")
+                    print("Failed to update " + str(data["thread_name"][row_index]))
+
+            # The current forum row does not exist, insert it into the beginning of the previosuly_updated_df
             else:
 
-                # TODO:
-
-                None
+                try:
+                    pud = data.iloc[row_index:(row_index + int(data["replies"][row_index]))].append(pud)
+                except:
+                    print("Something went wrong... ")
+                    print("Failed to update " + str(data["thread_name"][row_index]))
 
             #------------------------------------------------------------------------------------------#
             # Update index: skip through each forum thread instead of incrementing the loop index by 1
@@ -155,6 +202,7 @@ class Update:
                 row_index += 1
 
 
+        # TODO:
         # Save new edited csv
         crawl_date = str(datetime.now()).split(" ")[0]
         filename = crawl_date + ".csv"

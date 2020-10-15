@@ -8,10 +8,12 @@ from datetime import datetime
 import time
 import pandas as pd
 import zipfile
+import shutil
 
 # argv[1] will determine which forum to update
 # if no argv then it will update everything
 
+#--------------------------------------------------------------------------------------------------------------------------#
 
 class Update:
 
@@ -207,6 +209,7 @@ class Update:
         crawl_date = str(datetime.now()).split(" ")[0]
         filename = crawl_date + ".csv"
 
+#--------------------------------------------------------------------------------------------------------------------------#
 
 url = "https://forum.fiverr.com/"
 t1 = datetime.now()

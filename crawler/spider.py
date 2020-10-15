@@ -298,7 +298,7 @@ if(len(sys.argv) > 1):
             print("Invalid thread option, aborting scraping...")
 
         else:
-            if(sys.argv[1] == "1")
+            if(sys.argv[1] == "1"):
                 driver = webdriver.Chrome()
             else:
                 driver = webdriver.Chrome(options = options)
@@ -311,7 +311,7 @@ if(len(sys.argv) > 1):
         if(int(sys.argv[2]) > 6):
             print("Invalid thread option, aborting scraping...")
         else:
-            if(sys.argv[1] == "1")
+            if(sys.argv[1] == "1"):
                 driver = webdriver.Chrome()
             else:
                 driver = webdriver.Chrome(options = options)

@@ -74,7 +74,7 @@ class Spider:
                         thread_urls = f.readlines()
                     os.chdir('..')
                 except:
-                    print("There is no previous thread collection for the selected option")
+                    print("There is no previous data collection for the selected option")
                     print("Exiting program")
                     quit()
 
@@ -119,7 +119,7 @@ class Spider:
 
                 print("Collecting thread URLs...")
 
-                # For manual scraping
+                # For manual scraping and testing
                 # Execute script to scroll down the page
                 # for i in range(10):
                 #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
@@ -127,15 +127,37 @@ class Spider:
 
                 # Scrapes the entire forum
                 reached_bottom_of_page = False
-                while(not reached_bottom_of_page):
-                    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
-                    if(len(driver.find_elements_by_xpath("//footer[@class='topic-list-bottom']//div[@class='footer-message ember-view']//h3")) > 0):
-                        reached_bottom_of_page = True
-                    time.sleep(5.0)
 
                 thread_urls = []
                 for element in driver.find_elements_by_xpath("//table[@class='topic-list ember-view']//tbody//tr//a[starts-with(@class, 'title raw-link')]"):
                     thread_urls.append(element.get_attribute("href"))
+                try:
+                    while(not reached_bottom_of_page):
+                        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);var lenOfPage=document.body.scrollHeight;return lenOfPage;")
+                        if(len(driver.find_elements_by_xpath("//footer[@class='topic-list-bottom']//div[@class='footer-message ember-view']//h3")) > 0):
+                            reached_bottom_of_page = True
+                        time.sleep(5.0)
+                        for element in driver.find_elements_by_xpath("//table[@class='topic-list ember-view']//tbody//tr//a[starts-with(@class, 'title raw-link')]")[-30:]:
+                            thread_urls.append(element.get_attribute("href"))
+
+                # If the user interrupts scrape the collected thread_urls so far
+                except:
+                    print("\n"+"Something went wrong or the user has interrupted. Saving the collected data so far...")
+                    #interrupt_flag = True
+                    inp = input("Would you like continue with the program execution with the collected URLs?[y/n]")
+                    if inp == "y" or inp == "Y":
+                        print("Continuing with the collected URLs")
+                        # There is a bug in the driver for this try/except block so we declare a new driver instance
+                        if(sys.argv[1] == "1"):
+                            driver = webdriver.Chrome()
+                        else:
+                            driver = webdriver.Chrome(options = options)
+                    elif inp =="n" or inp =="N":
+                        print("Exiting the program...")
+                        quit()
+                    else:
+                        print("Invalid input, exiting the program...")
+                        quit()
 
                 # Change to the appropriate directory
                 self.chdir_forum(forum_num)
@@ -232,26 +254,6 @@ class Spider:
                 os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
 
         def run_analysis(self, filename, forum_num, driver, arg1 = False):
-
-            # if(arg1 == False):
-            #     # Get the most recent file after the filename
-            #     if forum_num == 0:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/welcome/')
-            #
-            #     elif forum_num == 1:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/covid-19_discussions/')
-            #
-            #     elif forum_num == 2:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_tips/')
-            #
-            #     elif forum_num == 3:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/your_fiverr_experience/')
-            #
-            #     elif forum_num == 4:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/fiverr_site/')
-            #
-            #     elif forum_num == 5:
-            #         os.chdir(os.path.dirname(os.path.abspath(__file__)) + '/data/events/')
 
             all_files = os.listdir()
             # remove the censored directory

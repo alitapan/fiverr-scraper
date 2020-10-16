@@ -140,7 +140,7 @@ class Update:
     def convert_date(self, date, forum_num):
 
         # TODO:
-
+        # MAY NOT NEED THIS
         date_list = date.split()
 
         month = date_list[0]
